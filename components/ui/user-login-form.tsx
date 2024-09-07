@@ -1,48 +1,48 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { useSearchParams } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { signIn } from "next-auth/react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import * as React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { cn } from "@/lib/utils"
-import { userAuthSchema } from "@/lib/validations/auth"
-import { buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "./label"
-import { toast } from "@/components/ui/use-toast"
-import { Icons } from "../icons"
+import { cn } from '@/lib/utils';
+import { userAuthSchema } from '@/lib/validations/auth';
+import { buttonVariants } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from './label';
+import { Icons } from '../icons';
+import { login } from '@/actions/login';
+import { FormSuccess } from '../forms/form-success';
+import { FormError } from '../forms/form-error';
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-type FormData = z.infer<typeof userAuthSchema>
+type FormData = z.infer<typeof userAuthSchema>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(userAuthSchema),
-  })
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+    resolver: zodResolver(userAuthSchema)
+  });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isPending, startTransition] = React.useTransition();
+  const [success, setSuccess] = React.useState<string | undefined>('');
+  const [error, setError] = React.useState<string | undefined>('');
 
   async function onSubmit(data: FormData) {
-    setIsLoading(true)
-
-
-    return toast({
-      title: "Success",
-      description: "You've successfully logged in",
-    })
-
-
+    setIsLoading(true);
+    const res = await login(data);
+    const err = res?.error;
+    setSuccess(success);
+    setError(err);
+    setIsLoading(false);
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn('grid gap-6', className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4">
           <div className="grid gap-1">
@@ -57,7 +57,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("email")}
+              {...register('email')}
             />
             {errors?.email && (
               <p className="px-1 text-xs text-red-600">
@@ -77,15 +77,23 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="new-password"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("password")}
+              {...register('password')}
             />
             {errors?.password && (
               <p className="px-1 text-xs text-red-600">
                 {errors.password.message}
               </p>
             )}
+            <div className="grid gap-1">
+              {error && <FormError message={error} />}
+              {success && <FormSuccess message={success} />}
+            </div>
           </div>
-          <button className={cn(buttonVariants())} disabled={isLoading} type="submit">
+          <button
+            className={cn(buttonVariants())}
+            disabled={isLoading}
+            type="submit"
+          >
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
@@ -99,5 +107,5 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

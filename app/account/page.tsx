@@ -13,8 +13,11 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { auth } from '@/auth';
 
-export default function page() {
+export default async function page() {
+  const session = await auth();
+  console.log({ session });
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-2">

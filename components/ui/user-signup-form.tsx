@@ -1,66 +1,63 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import * as React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { cn } from "@/lib/utils"
-import { userSignupSchema } from "@/lib/validations/auth"
-import { buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "./label"
-import { toast } from "@/components/ui/use-toast"
-import { Icons } from "../icons"
+import { cn } from '@/lib/utils';
+import { userSignupSchema } from '@/lib/validations/auth';
+import { buttonVariants } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from './label';
+import { toast } from '@/components/ui/use-toast';
+import { Icons } from '../icons';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
   InputOTPSeparator
-} from "@/components/ui/input-otp"
+} from '@/components/ui/input-otp';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { FormField } from '@/components/ui/form';
+import { register as signup } from '@/actions/register';
+import { FormError } from '../forms/form-error';
+import { FormSuccess } from '../forms/form-success';
 
-interface UserSignupFormProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface UserSignupFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-type FormData = z.infer<typeof userSignupSchema>
+type FormData = z.infer<typeof userSignupSchema>;
 
 export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(userSignupSchema),
-  })
+    resolver: zodResolver(userSignupSchema)
+  });
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isPending, startTransition] = React.useTransition();
+  const [success, setSuccess] = React.useState<string | undefined>('');
+  const [error, setError] = React.useState<string | undefined>('');
 
   async function onSubmit(data: FormData) {
-    console.log(data)
-    setIsLoading(true)
-
-    return toast({
-      title: "Success",
-      description: "You've successfully registered",
-    })
+    setIsLoading(true);
+    const res = signup(data);
+    let success = (await res).success;
+    let err = (await res).error;
+    setSuccess(success);
+    setError(err);
+    setIsLoading(false);
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn('grid gap-6', className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4">
-          <div className="grid md:grid-cols-2 gap-2">
-
+          <div className="grid gap-2 md:grid-cols-2">
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="email">
                 First Name
@@ -72,7 +69,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
                 autoCapitalize="none"
                 autoCorrect="off"
                 disabled={isLoading}
-                {...register("firstName")}
+                {...register('firstName')}
               />
               {errors?.firstName && (
                 <p className="px-1 text-xs text-red-600">
@@ -92,7 +89,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
                 autoCapitalize="none"
                 autoCorrect="off"
                 disabled={isLoading}
-                {...register("lastName")}
+                {...register('lastName')}
               />
               {errors?.lastName && (
                 <p className="px-1 text-xs text-red-600">
@@ -113,7 +110,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("email")}
+              {...register('email')}
             />
             {errors?.email && (
               <p className="px-1 text-xs text-red-600">
@@ -133,7 +130,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
               autoComplete="new-password"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("password")}
+              {...register('password')}
             />
             {errors?.password && (
               <p className="px-1 text-xs text-red-600">
@@ -153,7 +150,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
               autoComplete="new-password"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("confirmPassword")}
+              {...register('confirmPassword')}
             />
             {errors?.confirmPassword && (
               <p className="px-1 text-xs text-red-600">
@@ -166,9 +163,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
               control={control}
               name="pin"
               render={({ field }) => (
-                <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}
-                {...field}
-                >
+                <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} {...field}>
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
@@ -186,7 +181,15 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
               )}
             />
           </div>
-          <button className={cn(buttonVariants())} disabled={isLoading} type="submit">
+          <div className="grid gap-1">
+            {error && <FormError message={error} />}
+            {success && <FormSuccess message={success} />}
+          </div>
+          <button
+            className={cn(buttonVariants())}
+            disabled={isLoading}
+            type="submit"
+          >
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
@@ -200,5 +203,5 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

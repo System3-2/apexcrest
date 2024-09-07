@@ -5,18 +5,19 @@ import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { auth } from '@/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Proxima Heritage Crest - Modern Banking Solutions',
-  description: 'Proxima Heritage Crest offers innovative and reliable banking services to individuals and businesses. From savings and loans to business solutions, we help you achieve your financial goals with ease and security.',
-  keywords: 'Proxima Heritage Crest, banking, online banking, savings, loans, business banking, financial services, secure banking, personal finance, business solutions',
-  author: 'Proxima Heritage Crest',
+  description:
+    'Proxima Heritage Crest offers innovative and reliable banking services to individuals and businesses. From savings and loans to business solutions, we help you achieve your financial goals with ease and security.',
+  keywords:
+    'Proxima Heritage Crest, banking, online banking, savings, loans, business banking, financial services, secure banking, personal finance, business solutions',
   openGraph: {
     title: 'Proxima Heritage Crest - Your Trusted Banking Partner',
-    description: 'Explore Proxima Heritage Crest for reliable and secure banking services that empower you to achieve financial success. Discover personalized banking solutions for individuals and businesses.',
+    description:
+      'Explore Proxima Heritage Crest for reliable and secure banking services that empower you to achieve financial success. Discover personalized banking solutions for individuals and businesses.',
     url: '',
     type: 'website',
     images: [
@@ -24,17 +25,17 @@ export const metadata = {
         url: '',
         width: 800,
         height: 600,
-        alt: 'Proxima Heritage Crest Logo',
-      },
-    ],
+        alt: 'Proxima Heritage Crest Logo'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
     site: '@ProximaCrest',
     title: 'Proxima Heritage Crest - Modern Banking Solutions',
-    description: 'Proxima Heritage Crest provides secure, personalized banking solutions for individuals and businesses. Let us help you manage your finances efficiently.',
-    image: '',
-  },
+    description:
+      'Proxima Heritage Crest provides secure, personalized banking solutions for individuals and businesses. Let us help you manage your finances efficiently.'
+  }
 };
 
 export default async function RootLayout({
@@ -42,15 +43,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} `}
-        suppressHydrationWarning={true}
-      >
+      <body className={`${inter.className} `} suppressHydrationWarning={true}>
         <NextTopLoader showSpinner={false} />
-        <Providers session={session}>
+        <Providers>
           <Toaster />
           {children}
         </Providers>

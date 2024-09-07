@@ -1,43 +1,36 @@
-import { NextAuthConfig } from 'next-auth';
-import CredentialProvider from 'next-auth/providers/credentials';
-import GithubProvider from 'next-auth/providers/github';
+import Credentials from 'next-auth/providers/credentials';
+import type { NextAuthConfig } from 'next-auth';
+import { prisma } from './lib/prisma';
+import bcrypt from 'bcryptjs';
 
-const authConfig = {
+export default {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? ''
-    }),
-    CredentialProvider({
-      credentials: {
-        email: {
-          type: 'email'
-        },
-        password: {
-          type: 'password'
+    Credentials({
+      async authorize(credentials) {
+        const { email, password } = credentials;
+        const user = await prisma.user.findUnique({
+          where: { email: email as string },
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+            accountNumber: true,
+            password: true
+          }
+        });
+        if (!user) {
+          throw new Error('User not found.');
         }
-      },
-      async authorize(credentials, req) {
-        const user = {
-          id: '1',
-          name: 'John',
-          email: credentials?.email as string
-        };
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+        const pwMatches = await bcrypt.compare(
+          password as string,
+          user.password
+        );
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        if (!pwMatches) {
+          return null;
         }
+        return user;
       }
     })
-  ],
-  pages: {
-    signIn: '/' //sigin page
-  }
+  ]
 } satisfies NextAuthConfig;
-
-export default authConfig;
