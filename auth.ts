@@ -37,6 +37,14 @@ export const {
         session.user.accountNumber = token.accountNumber as string;
       }
       return session;
+    },
+    async signIn({ user, account }) {
+      if (account?.provider !== 'credentials') return true;
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email as string }
+      });
+      if (!existingUser?.emailVerified) return false;
+      return true;
     }
   },
   ...authConfig,

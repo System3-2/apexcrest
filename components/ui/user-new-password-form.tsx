@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -6,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { cn } from '@/lib/utils';
-import { userAuthSchema } from '@/lib/validations/auth';
+import { userNewPassowordSchema } from '@/lib/validations/auth';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from './label';
@@ -15,31 +16,35 @@ import { login } from '@/actions/login';
 import { FormSuccess } from '../forms/form-success';
 import { FormError } from '../forms/form-error';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { newPassword } from '@/actions/new-password';
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserNewPassowordProps extends React.HTMLAttributes<HTMLDivElement> { }
 
-type FormData = z.infer<typeof userAuthSchema>;
+type FormData = z.infer<typeof userNewPassowordSchema>;
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserNewPassword({ className, ...props }: UserNewPassowordProps) {
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(userAuthSchema)
+    resolver: zodResolver(userNewPassowordSchema)
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isPending, startTransition] = React.useTransition();
   const [success, setSuccess] = React.useState<string | undefined>('');
   const [error, setError] = React.useState<string | undefined>('');
+  const searchParams = useSearchParams()
+  const token = searchParams.get("token")
 
   async function onSubmit(data: FormData) {
     setIsLoading(true);
-    const res = await login(data);
-    const err = res?.error;
-    const succ = res?.success
-    setSuccess(succ);
-    setError(err);
+    newPassword(data, token)
+      .then((res) => {
+        setSuccess(res?.success)
+        setError(res?.error)
+
+      })
     setIsLoading(false);
   }
 
@@ -49,34 +54,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         <div className="grid gap-4">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
-              {...register('email')}
-            />
-            {errors?.email && (
-              <p className="px-1 text-xs text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="password">
               Password
             </Label>
             <Input
               id="password"
-              placeholder="*********"
+              placeholder="********"
               type="password"
               autoCapitalize="none"
-              autoComplete="new-password"
+              autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
               {...register('password')}
@@ -86,16 +71,36 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 {errors.password.message}
               </p>
             )}
+          </div>
+          <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="password">
+              Confirm Password
+            </Label>
+            <Input
+              id="cofirmPassword"
+              placeholder="*********"
+              type="password"
+              autoCapitalize="none"
+              autoComplete="new-password"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register('confirmPassword')}
+            />
+            {errors?.confirmPassword && (
+              <p className="px-1 text-xs text-red-600">
+                {errors.confirmPassword.message}
+              </p>
+            )}
             <div className="grid gap-1">
               {error && <FormError message={error} />}
               {success && <FormSuccess message={success} />}
             </div>
           </div>
           <Link
-            href="/reset"
+            href="/login"
             className="hover:text-brand underline underline-offset-4 text-xs"
           >
-            Forgotten password? Reset
+            Login
           </Link>
           <button
             className={cn(buttonVariants())}
@@ -105,7 +110,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Sign In
+            Submit
           </button>
         </div>
       </form>

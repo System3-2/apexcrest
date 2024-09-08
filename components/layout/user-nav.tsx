@@ -11,24 +11,26 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { signOut, useSession } from 'next-auth/react';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { signOut } from 'next-auth/react';
 export function UserNav() {
+  const currentUser = useCurrentUser()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={''} alt={''} />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarFallback>{currentUser?.firstName[0]}{currentUser?.lastName[0]}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">John doe</p>
+            <p className="text-sm font-medium leading-none">{currentUser?.firstName} {currentUser?.lastName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              john@email.com
+              {currentUser?.email}
             </p>
           </div>
         </DropdownMenuLabel>

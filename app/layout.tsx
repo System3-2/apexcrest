@@ -5,6 +5,8 @@ import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { auth } from '@/auth';
+import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,13 +45,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth()
   return (
     <html lang="en">
       <body className={`${inter.className} `} suppressHydrationWarning={true}>
         <NextTopLoader showSpinner={false} />
         <Providers>
-          <Toaster />
-          {children}
+          <SessionProvider session={session}>
+            <Toaster />
+            {children}
+          </SessionProvider>
         </Providers>
       </body>
     </html>

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
 import { useSidebar } from '@/hooks/useSidebar';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 type SidebarProps = {
   className?: string;
@@ -13,6 +14,7 @@ type SidebarProps = {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isMinimized, toggle } = useSidebar();
+  const session = useSession()
 
   const handleToggle = () => {
     toggle();
@@ -31,14 +33,14 @@ export default function Sidebar({ className }: SidebarProps) {
           href={'/account'}
           target="_blank"
         >
-              <img
-                src="/proxima.svg"
-                alt="Logo"
-                className="h-10"
-                width="40"
-                height="40"
-                style={{ aspectRatio: "40/40", objectFit: "cover" }}
-              />
+          <img
+            src="/proxima.svg"
+            alt="Logo"
+            className="h-10"
+            width="40"
+            height="40"
+            style={{ aspectRatio: "40/40", objectFit: "cover" }}
+          />
         </Link>
       </div>
       <ChevronLeft

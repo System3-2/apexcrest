@@ -23,8 +23,9 @@ import { FormField } from '@/components/ui/form';
 import { register as signup } from '@/actions/register';
 import { FormError } from '../forms/form-error';
 import { FormSuccess } from '../forms/form-success';
+import Link from 'next/link';
 
-interface UserSignupFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserSignupFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 type FormData = z.infer<typeof userSignupSchema>;
 
@@ -39,7 +40,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
   });
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isPending, startTransition] = React.useTransition();
+  const [, startTransition] = React.useTransition();
   const [success, setSuccess] = React.useState<string | undefined>('');
   const [error, setError] = React.useState<string | undefined>('');
 
@@ -48,7 +49,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
     const res = signup(data);
     let success = (await res).success;
     let err = (await res).error;
-    setSuccess(success);
+    setSuccess(success)
     setError(err);
     setIsLoading(false);
   }
@@ -185,6 +186,12 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
             {error && <FormError message={error} />}
             {success && <FormSuccess message={success} />}
           </div>
+          <Link
+            href="/login"
+            className="hover:text-brand underline underline-offset-4 text-xs"
+          >
+            Already have an account? Login
+          </Link>
           <button
             className={cn(buttonVariants())}
             disabled={isLoading}

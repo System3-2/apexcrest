@@ -1,30 +1,23 @@
+
 import { Metadata } from "next"
 import Link from "next/link"
-import { UserAuthForm } from "@/components/ui/user-login-form"
+import { UserNewPassword } from "@/components/ui/user-new-password-form"
 
 export const metadata: Metadata = {
-  title: "Login",
-  description: "Login to your account",
+  title: "New password",
+  description: "Create your new password",
 }
 
-export default function Login() {
+export default function NewPassword() {
   return (
     <div className="flex h-screen flex-col items-center pt-32 md:pt-0 md:justify-center px-4">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-1/4">
         <div className="flex flex-col space-y-2 text-center items-center">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back
+            Create new password
           </h1>
         </div>
-        <UserAuthForm />
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
-            href="/signup"
-            className="hover:text-brand underline underline-offset-4 text-sm"
-          >
-            Don&apos;t have an account? Sign Up
-          </Link>
-        </p>
+        <UserNewPassword />
       </div>
     </div>
   )

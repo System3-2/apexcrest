@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { generateUniqueAccountNumber } from '@/lib/generate-account-number';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { generateVerificationToken } from '@/lib/tokens';
+import { sendVerificationEmail } from '@/lib/mail';
 
 export async function register(data: z.infer<typeof userSignupSchema>) {
   const validatedFields = userSignupSchema.safeParse(data);
@@ -30,7 +32,9 @@ export async function register(data: z.infer<typeof userSignupSchema>) {
       }
     });
     if (user) {
-      return { success: 'Signup successful' };
+      const verificationToken = await generateVerificationToken(email)
+      await sendVerificationEmail(verificationToken.email, verificationToken.token)
+      return { success: 'Confirmation email sent' };
     }
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {

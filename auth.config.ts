@@ -19,7 +19,7 @@ export default {
           }
         });
         if (!user) {
-          throw new Error('User not found.');
+          return null
         }
         const pwMatches = await bcrypt.compare(
           password as string,
