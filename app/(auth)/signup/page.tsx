@@ -32,7 +32,7 @@ export default function SignUp() {
             </Link>{' '}
             and{' '}
             <Link
-              href="/privacy"
+              href="/terms"
               className="hover:text-brand underline underline-offset-4"
             >
               Privacy Policy

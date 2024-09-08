@@ -115,7 +115,13 @@ export const navItems: NavItem[] = [
     title: 'My Account',
     href: '/account',
     icon: 'dashboard',
-    label: 'My Account',
+    label: 'My Account'
+  },
+  {
+    title: 'Transfer',
+    href: '/account/transfer',
+    icon: 'coins',
+    label: 'transfer'
   },
   {
     title: 'User',
@@ -140,5 +146,5 @@ export const navItems: NavItem[] = [
     href: '/account/support',
     icon: 'kanban',
     label: 'Support'
-  },
+  }
 ];

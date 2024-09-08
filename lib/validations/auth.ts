@@ -40,3 +40,17 @@ export const userNewPassowordSchema = z
     message: "Passwords don't match",
     path: ['confirmPassword'] // path of error
   });
+
+export const transferSchema = z.object({
+  amount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .min(10, { message: 'Amount must be at least $10' }),
+  accountNumber: z.coerce
+    .number({
+      invalid_type_error: 'Account number must be a number',
+      required_error: 'Account number is required'
+    })
+    .gte(10, { message: 'Account number must be at least 10' }),
+  description: z.string(),
+  pin: z.string()
+});

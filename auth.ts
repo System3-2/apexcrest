@@ -21,6 +21,8 @@ export const {
       token.lastName = existingUser.lastName;
       token.accountNumber = existingUser.accountNumber;
       token.role = existingUser.role;
+      token.accountBalance = existingUser.accountBalance;
+      token.id = existingUser.id;
       return token;
     },
     async session({ token, session }) {
@@ -29,12 +31,16 @@ export const {
         token.firstName &&
         token.lastName &&
         token.accountNumber &&
+        token.id &&
         session.user
       ) {
         session.user.role = token.role as 'ADMIN' | 'USER';
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.accountNumber = token.accountNumber as string;
+        session.user.accountBalance = token.accountBalance as number;
+        //@ts-ignore
+        session.user.id = token.id as number;
       }
       return session;
     },
