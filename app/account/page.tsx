@@ -16,6 +16,7 @@ export default async function page() {
   const user = await currentUser();
 
   const result = await getTransactionsSummary(user?.id);
+  const { lastFiveTransactions } = result;
   console.log({ result });
   return (
     <PageContainer scrollable={true}>
@@ -109,9 +110,11 @@ export default async function page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+573</div>
+                  <div className="text-2xl font-bold">
+                    {result.totalTransactions}
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    +201 since last year
+                    +{result.totalTransactions} since last year
                   </p>
                 </CardContent>
               </Card>
@@ -121,11 +124,11 @@ export default async function page() {
                 <CardHeader>
                   <CardTitle>Recent Transaction</CardTitle>
                   <CardDescription>
-                    You made {result.totalTransactions} transactions this month.
+                    You made {result.totalTransactions} transactions
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RecentTransactions />
+                  <RecentTransactions data={lastFiveTransactions} />
                 </CardContent>
               </Card>
               <div className="col-span-4">

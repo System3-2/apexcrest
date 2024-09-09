@@ -41,9 +41,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-  DialogClose
+  DialogFooter
 } from '@/components/ui/dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import React, { useState } from 'react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { Input } from '@/components/ui/input';
@@ -53,6 +53,22 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField } from './ui/form';
 import { Icons } from './icons';
+import { transfer } from '@/actions/transfer';
+import { Terminal } from 'lucide-react';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { toast } from 'sonner';
+import { Receipt } from './receipt';
+import { Decimal } from '@prisma/client/runtime/library';
+
+export type ReceiptDetails = {
+  amount: Decimal;
+  receiverAccountNumber: string;
+  description: string;
+  date: Date;
+  firstName: string;
+  lastName: string;
+  accountBalance: Decimal;
+};
 
 interface TransferFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 type FormData = z.infer<typeof transferSchema>;
@@ -74,13 +90,44 @@ export function TransferForm() {
   const watchedAccountNumber = watch('accountNumber');
   const watchedDescription = watch('description');
   const watchedPin = watch('pin');
+  const [receiptDetails, setReceiptDetails] = useState<ReceiptDetails | null>(
+    null
+  ); // State to hold receipt details
+  const [showReceiptModal, setShowReceiptModal] = useState(true); // State to manage modal visibility
+
+  const user = useCurrentUser();
 
   const allFieldsFilled =
     watchedAmount && watchedAccountNumber && watchedDescription && watchedPin;
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
-    console.log({ data });
+    transfer(data, user?.email).then((res) => {
+      if (res.success) {
+        toast.success('Success', {
+          description: res.success,
+          position: 'bottom-center'
+        });
+        // Store the receipt details
+        setReceiptDetails({
+          receiverAccountNumber:
+            res.transactionResult.updateReciever.accountNumber,
+          amount: res.transactionResult.transaction.amount,
+          description: res.transactionResult.transaction.description as string,
+          date: res.transactionResult.transaction.createdAt as Date,
+          firstName: res.transactionResult.updateReciever.firstName,
+          lastName: res.transactionResult.updateReciever.lastName,
+          accountBalance: res.transactionResult.updateSender.accountBalance
+        });
+        // Open the receipt modal
+        setShowReceiptModal(true);
+      } else {
+        toast.error('Error', {
+          description: res.error,
+          position: 'bottom-center'
+        });
+      }
+    });
     setIsLoading(false);
   };
 
@@ -89,6 +136,7 @@ export function TransferForm() {
       setShowPinModal(true);
     }
   };
+
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
@@ -116,6 +164,7 @@ export function TransferForm() {
             <Label htmlFor="account">Account Number</Label>
             <Input
               id="account"
+              type="string"
               placeholder="Enter account number"
               {...register('accountNumber')}
               disabled={isLoading}
@@ -139,6 +188,15 @@ export function TransferForm() {
                 {errors.description.message}
               </p>
             )}
+          </div>
+          <div className="space-y-2">
+            <Alert>
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                Make sure to fill all fields to complete transfer
+              </AlertDescription>
+            </Alert>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
@@ -208,6 +266,14 @@ export function TransferForm() {
           </CardFooter>
         )}
       </form>
+
+      {showReceiptModal && receiptDetails && (
+        <Dialog open={showReceiptModal} onOpenChange={setShowReceiptModal}>
+          <DialogContent className="sm:max-w-2xl">
+            <Receipt data={receiptDetails} />
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   );
 }

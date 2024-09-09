@@ -1,5 +1,5 @@
 import Providers from '@/components/layout/providers';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
@@ -45,14 +45,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth()
+  const session = await auth();
   return (
     <html lang="en">
       <body className={`${inter.className} `} suppressHydrationWarning={true}>
         <NextTopLoader showSpinner={false} />
         <Providers>
           <SessionProvider session={session}>
-            <Toaster />
+            <Toaster richColors />
             {children}
           </SessionProvider>
         </Providers>

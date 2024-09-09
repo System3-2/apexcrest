@@ -45,12 +45,12 @@ export const transferSchema = z.object({
   amount: z.coerce
     .number({ invalid_type_error: 'Amount must be a number' })
     .min(10, { message: 'Amount must be at least $10' }),
-  accountNumber: z.coerce
-    .number({
+  accountNumber: z
+    .string({
       invalid_type_error: 'Account number must be a number',
       required_error: 'Account number is required'
     })
-    .gte(10, { message: 'Account number must be at least 10' }),
+    .length(10, { message: 'Account number must be at least 10' }),
   description: z.string(),
   pin: z.string()
 });
