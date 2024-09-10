@@ -16,12 +16,10 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
   SheetFooter,
   SheetClose
 } from '@/components/ui/sheet';
-import { Label } from '@/components/ui/label';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
 type RouteProps = {
@@ -31,21 +29,15 @@ type RouteProps = {
 
 const routeList: RouteProps[] = [
   {
-    href: '/small-business',
-    label: 'SMALL BUSINESS'
+    href: '/about',
+    label: 'ABOUT'
   },
   {
-    href: '/commercial',
-    label: 'COMMERCIAL'
-  },
-  {
-    href: '/wealth',
-    label: 'WEALTH'
+    href: '/servies',
+    label: 'SERVICES'
   }
 ];
 export function RootNavbar() {
-  const [isOpen, setIsOpen] = useState<Boolean>(false);
-
   return (
     <header className="sticky ">
       {/* Mobile nav */}

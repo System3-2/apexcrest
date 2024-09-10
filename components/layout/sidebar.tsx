@@ -1,12 +1,10 @@
 'use client';
-import React, { useState } from 'react';
 import { DashboardNav } from '@/components/dashboard-nav';
 import { navItems } from '@/constants/data';
 import { cn } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
 import { useSidebar } from '@/hooks/useSidebar';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 
 type SidebarProps = {
   className?: string;
@@ -14,7 +12,6 @@ type SidebarProps = {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isMinimized, toggle } = useSidebar();
-  const session = useSession()
 
   const handleToggle = () => {
     toggle();
@@ -29,17 +26,14 @@ export default function Sidebar({ className }: SidebarProps) {
       )}
     >
       <div className="hidden p-5 pt-10 lg:block">
-        <Link
-          href={'/account'}
-          target="_blank"
-        >
+        <Link href={'/account'} target="_blank">
           <img
             src="/proxima.svg"
             alt="Logo"
             className="h-10"
             width="40"
             height="40"
-            style={{ aspectRatio: "40/40", objectFit: "cover" }}
+            style={{ aspectRatio: '40/40', objectFit: 'cover' }}
           />
         </Link>
       </div>

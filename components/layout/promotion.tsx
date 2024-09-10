@@ -1,8 +1,8 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export function Promotion() {
   return (
-    <div >
+    <div>
       <div className="mx-auto mb-1">
         <div className="relative isolate overflow-hidden px-6 pt-16 shadow-2xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
           <svg
@@ -10,7 +10,13 @@ export function Promotion() {
             aria-hidden="true"
             className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0"
           >
-            <circle r={512} cx={512} cy={512} fill="#1e3a8a" fillOpacity="0.7" />
+            <circle
+              r={512}
+              cx={512}
+              cy={512}
+              fill="#1e3a8a"
+              fillOpacity="0.7"
+            />
 
             <defs>
               <radialGradient id="759c1415-0410-454c-8f7c-9a820de03641">
@@ -26,7 +32,8 @@ export function Promotion() {
               new checking account
             </h2>
             <p className="mt-6 text-lg leading-8 text-gray-300">
-              Experience a premium account with features designed to simplify your financial life.
+              Experience a premium account with features designed to simplify
+              your financial life.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
               <Link
@@ -35,7 +42,10 @@ export function Promotion() {
               >
                 Get started
               </Link>
-              <Link href="/help" className="text-sm font-semibold leading-6 text-white">
+              <Link
+                href="/about"
+                className="text-sm font-semibold leading-6 text-white"
+              >
                 Learn more <span aria-hidden="true">→</span>
               </Link>
             </div>
@@ -52,5 +62,5 @@ export function Promotion() {
         </div>
       </div>
     </div>
-  )
+  );
 }

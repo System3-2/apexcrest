@@ -1,7 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PageContainer from '@/components/layout/page-container';
 import { columns } from '@/components/tables/employee-tables/columns';
-import { EmployeeTable } from '@/components/tables/employee-tables/employee-table';
+import { TransactionsTable } from '@/components/tables/employee-tables/transactions-table';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
@@ -11,7 +11,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
+  { title: 'Account', link: '/account' },
   { title: 'Transaction', link: '/dashboard/transactions' }
 ];
 
@@ -41,13 +41,10 @@ export default async function page({ searchParams }: paramsProps) {
         <Breadcrumbs items={breadcrumbItems} />
 
         <div className="flex items-start justify-between">
-          <Heading
-            title={`Transaction`}
-            description="Transaction history"
-          />
+          <Heading title={`Transaction`} description="Transaction history" />
 
           <Link
-            href={'/dashboard/transaction'}
+            href={'/account/transfer'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
@@ -55,14 +52,7 @@ export default async function page({ searchParams }: paramsProps) {
         </div>
         <Separator />
 
-        <EmployeeTable
-          searchKey="country"
-          pageNo={page}
-          columns={columns}
-          totalUsers={totalUsers}
-          data={employee}
-          pageCount={pageCount}
-        />
+        <TransactionsTable />
       </div>
     </PageContainer>
   );

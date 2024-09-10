@@ -2,7 +2,9 @@ export const publicRoutes = [
   '/',
   '/new-verification',
   '/new-password',
-  '/terms'
+  '/terms',
+  '/about',
+  '/services'
 ];
 
 export const authRoutes = ['/login', '/signup', '/auth/error', '/reset'];

@@ -124,15 +124,9 @@ export const navItems: NavItem[] = [
     label: 'transfer'
   },
   {
-    title: 'User',
-    href: '/account/user',
-    icon: 'user',
-    label: 'user'
-  },
-  {
     title: 'Transaction',
     href: '/account/transactions',
-    icon: 'employee',
+    icon: 'transactions',
     label: 'transaction'
   },
   {
@@ -140,11 +134,5 @@ export const navItems: NavItem[] = [
     href: '/account/profile',
     icon: 'profile',
     label: 'profile'
-  },
-  {
-    title: 'Support',
-    href: '/account/support',
-    icon: 'kanban',
-    label: 'Support'
   }
 ];
