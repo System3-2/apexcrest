@@ -14,6 +14,7 @@ import { Icons } from '../icons';
 import { login } from '@/actions/login';
 import { FormSuccess } from '../forms/form-success';
 import { FormError } from '../forms/form-error';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -29,7 +30,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(userAuthSchema)
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isPending, startTransition] = React.useTransition();
   const [success, setSuccess] = React.useState<string | undefined>('');
   const [error, setError] = React.useState<string | undefined>('');
 
@@ -37,8 +37,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(true);
     const res = await login(data);
     const err = res?.error;
-    const succ = res?.success
+    const succ = res?.success;
     setSuccess(succ);
+    if (err) {
+      toast.error('Error', {
+        description: res.error,
+        position: 'bottom-center'
+      });
+    }
     setError(err);
     setIsLoading(false);
   }
@@ -93,7 +99,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </div>
           <Link
             href="/reset"
-            className="hover:text-brand underline underline-offset-4 text-xs"
+            className="hover:text-brand text-xs underline underline-offset-4"
           >
             Forgotten password? Reset
           </Link>

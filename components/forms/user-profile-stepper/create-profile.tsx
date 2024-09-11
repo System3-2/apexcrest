@@ -1,390 +1,240 @@
 'use client';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
 import { Heading } from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { profileSchema, type ProfileFormValues } from '@/lib/form-schema';
-import { cn } from '@/lib/utils';
+import { profileSchema } from '@/lib/validations/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { Label } from '@/components/ui/label';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator
+} from '@/components/ui/input-otp';
+import { FormField } from '@/components/ui/form';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import * as z from 'zod';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
+import { Icons } from '@/components/icons';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { toast } from 'sonner';
+import { updateProfile } from '@/actions/settings';
 
-interface ProfileFormType {
-  initialData: any | null;
-  categories: any;
-}
+type FormData = z.infer<typeof profileSchema>;
 
-export const CreateProfileOne: React.FC<ProfileFormType> = ({
-  initialData,
-  categories
-}) => {
-  const params = useParams();
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
-  const title = initialData ? 'Edit product' : 'Update Your Profile';
-  const description = initialData
-    ? 'Update Your Profile'
-    : 'To update your profile, we first need some basic information about you.';
-  const toastMessage = initialData ? 'Profile updated.' : 'Profile created.';
-  const action = initialData ? 'Save changes' : 'Create';
-  const [previousStep, setPreviousStep] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [data, setData] = useState({});
-  const delta = currentStep - previousStep;
+export const CreateProfileOne = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const title = 'Update Your Profile';
+  const description =
+    'To update your profile, we first need some basic information about you.';
+  const user = useCurrentUser();
 
-  const defaultValues = {
-    jobs: [
-      {
-        jobtitle: '',
-        employer: '',
-        startdate: '',
-        enddate: '',
-        jobcountry: '',
-        jobcity: ''
-      }
-    ]
-  };
-
-  const form = useForm<ProfileFormValues>({
+  const form = useForm<FormData>({
     resolver: zodResolver(profileSchema),
-    mode: 'onChange'
+    defaultValues: {
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email
+    }
   });
 
   const {
+    register,
+    handleSubmit,
     control,
     formState: { errors }
   } = form;
 
-  const { append, remove, fields } = useFieldArray({
-    control,
-    //@ts-ignore
-    name: ''
-  });
-
-  const onSubmit = async (data: ProfileFormValues) => {
-    try {
-      setLoading(true);
-      if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
-      } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
-      }
-      router.refresh();
-      router.push(`/dashboard/products`);
-    } catch (error: any) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-    } catch (error: any) {
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
-  };
-
-  const processForm: SubmitHandler<ProfileFormValues> = (data) => {
+  const processForm = (data: z.infer<typeof profileSchema>) => {
     console.log('data ==>', data);
-    setData(data);
     // api call and reset
-    // form.reset();
+    updateProfile(data)
+      .then((res) => {
+        if (res.error) {
+          toast.error('Error', {
+            description: res.error,
+            position: 'bottom-center'
+          });
+        }
+        if (res.success) {
+          toast.success('Success', {
+            description: res.success,
+            position: 'bottom-center'
+          });
+        }
+      })
+      .catch(() => {
+        toast.error('Error', {
+          description: 'Something went wrong',
+          position: 'bottom-center'
+        });
+      });
   };
-
-  type FieldName = keyof ProfileFormValues;
-
-  const steps = [
-    {
-      id: 'Step 1',
-      name: 'Personal Information',
-      fields: ['firstname', 'lastname', 'email', 'contactno', 'country', 'city']
-    },
-    {
-      id: 'Step 2',
-      name: 'Security',
-      // fields are mapping and flattening for the error to be trigger  for the dynamic fields
-      fields: fields
-        ?.map((_, index) => [
-          `jobs.${index}.jobtitle`,
-          `jobs.${index}.employer`,
-          `jobs.${index}.startdate`,
-          `jobs.${index}.enddate`,
-          `jobs.${index}.jobcountry`,
-          `jobs.${index}.jobcity`
-          // Add other field names as needed
-        ])
-        .flat()
-    },
-    { id: 'Step 3', name: 'Complete' }
-  ];
-
-  const next = async () => {
-    const fields = steps[currentStep].fields;
-
-    const output = await form.trigger(fields as FieldName[], {
-      shouldFocus: true
-    });
-
-    if (!output) return;
-
-    if (currentStep < steps.length - 1) {
-      if (currentStep === steps.length - 2) {
-        await form.handleSubmit(processForm)();
-      }
-      setPreviousStep(currentStep);
-      setCurrentStep((step) => step + 1);
-    }
-  };
-
-  const prev = () => {
-    if (currentStep > 0) {
-      setPreviousStep(currentStep);
-      setCurrentStep((step) => step - 1);
-    }
-  };
-
-  const countries = [{ id: 'wow', name: 'india' }];
-  const cities = [{ id: '2', name: 'kerala' }];
 
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
-        {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        )}
       </div>
       <Separator />
-      <div>
-        <ul className="flex gap-4">
-          {steps.map((step, index) => (
-            <li key={step.name} className="md:flex-1">
-              {currentStep > index ? (
-                <div className="group flex w-full flex-col border-l-4 border-sky-600 py-2 pl-4 transition-colors md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
-                  <span className="text-sm font-medium text-sky-600 transition-colors ">
-                    {step.id}
-                  </span>
-                  <span className="text-sm font-medium">{step.name}</span>
-                </div>
-              ) : currentStep === index ? (
-                <div
-                  className="flex w-full flex-col border-l-4 border-sky-600 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
-                  aria-current="step"
-                >
-                  <span className="text-sm font-medium text-sky-600">
-                    {step.id}
-                  </span>
-                  <span className="text-sm font-medium">{step.name}</span>
-                </div>
-              ) : (
-                <div className="group flex h-full w-full flex-col border-l-4 border-gray-200 py-2 pl-4 transition-colors md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
-                  <span className="text-sm font-medium text-gray-500 transition-colors">
-                    {step.id}
-                  </span>
-                  <span className="text-sm font-medium">{step.name}</span>
-                </div>
+      <div className="grid gap-6">
+        <form onSubmit={handleSubmit(processForm)}>
+          <div className="grid md:grid-cols-2">
+            <div className="grid gap-1">
+              <Label className="" htmlFor="email">
+                First Name
+              </Label>
+              <Input
+                id="firstName"
+                placeholder="John"
+                type="text"
+                autoCapitalize="none"
+                autoCorrect="off"
+                disabled={isLoading}
+                {...register('firstName')}
+              />
+              {errors?.firstName && (
+                <p className="px-1 text-xs text-red-600">
+                  {errors.firstName.message}
+                </p>
               )}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <Separator />
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(processForm)}
-          className="w-full space-y-8"
-        >
-          <div
-            className={cn(
-              currentStep === 1
-                ? 'w-full md:inline-block'
-                : 'gap-8 md:grid md:grid-cols-3'
-            )}
-          >
-            {currentStep === 0 && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="firstname"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={loading}
-                          placeholder="John"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="lastname"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={loading}
-                          placeholder="Doe"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={loading}
-                          placeholder="johndoe@gmail.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="contactno"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact Number</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter you contact number"
-                          disabled={loading}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-            {currentStep === 1 && (
-              <>
-                {fields?.map((field, index) => (
-                  <div>test</div>
-                ))}
+            </div>
 
-                <div className="mt-4 flex justify-center">
-                  <h2>We can't process this right now</h2>
-                </div>
-              </>
-            )}
-            {currentStep === 2 && (
-              <div>
-                <h1>Completed</h1>
-                <pre className="whitespace-pre-wrap">
-                  {JSON.stringify(data)}
-                </pre>
-              </div>
-            )}
+            <div className="grid gap-1">
+              <Label className="" htmlFor="email">
+                Last Name
+              </Label>
+              <Input
+                id="lastName"
+                placeholder="Doe"
+                type="text"
+                autoCapitalize="none"
+                autoCorrect="off"
+                disabled={isLoading}
+                {...register('lastName')}
+              />
+              {errors?.lastName && (
+                <p className="px-1 text-xs text-red-600">
+                  {errors.lastName.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="grid gap-4 gap-y-6 md:grid-cols-2">
+            <div className="grid gap-1">
+              <Label className="" htmlFor="email">
+                Email
+              </Label>
+              <Input
+                id="email"
+                placeholder="name@example.com"
+                type="email"
+                autoCapitalize="none"
+                autoComplete="email"
+                autoCorrect="off"
+                disabled
+                {...register('email')}
+              />
+              {errors?.email && (
+                <p className="px-1 text-xs text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+            <div className="grid gap-1">
+              <Label className="" htmlFor="password">
+                Password
+              </Label>
+              <Input
+                id="password"
+                placeholder="*********"
+                type="password"
+                autoCapitalize="none"
+                autoComplete="new-password"
+                autoCorrect="off"
+                disabled={isLoading}
+                {...register('password')}
+              />
+              {errors?.password?.message && (
+                <p className="px-1 text-xs text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button> */}
+          <div className="grid gap-4 gap-y-6 md:grid-cols-2">
+            <div className="grid gap-1">
+              <Label className="" htmlFor="newPassword">
+                New Password
+              </Label>
+              <Input
+                id="newPassword"
+                placeholder="*********"
+                type="password"
+                autoCapitalize="none"
+                autoComplete="new-password"
+                autoCorrect="off"
+                disabled={isLoading}
+                {...register('newPassword')}
+              />
+              {errors?.newPassword?.message && (
+                <p className="px-1 text-xs text-red-600">
+                  {errors.newPassword.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="grid gap-4 gap-y-6 md:grid-cols-2">
+            <div className="grid gap-1">
+              <Label className="" htmlFor="pin">
+                New Pin
+              </Label>
+              <FormField
+                control={control}
+                name="pin"
+                render={({ field }) => (
+                  <InputOTP
+                    maxLength={6}
+                    pattern={REGEXP_ONLY_DIGITS}
+                    {...field}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSeparator />
+
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                    </InputOTPGroup>
+                    {errors?.pin && (
+                      <p className="px-1 text-xs text-red-600">
+                        {errors.pin.message}
+                      </p>
+                    )}
+                  </InputOTP>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 gap-y-6 pt-4 md:grid-cols-2">
+            <button
+              className={cn(buttonVariants())}
+              disabled={isLoading}
+              type="submit"
+            >
+              {isLoading && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Update
+            </button>
+          </div>
         </form>
-      </Form>
-      {/* Navigation */}
-      <div className="mt-8 pt-5">
-        <div className="flex justify-between">
-          <button
-            type="button"
-            onClick={prev}
-            disabled={currentStep === 0}
-            className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="h-6 w-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={next}
-            disabled={currentStep === steps.length - 1}
-            className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="h-6 w-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </button>
-        </div>
       </div>
     </>
   );

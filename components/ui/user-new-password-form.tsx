@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -12,18 +11,21 @@ import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from './label';
 import { Icons } from '../icons';
-import { login } from '@/actions/login';
 import { FormSuccess } from '../forms/form-success';
 import { FormError } from '../forms/form-error';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { newPassword } from '@/actions/new-password';
+import { toast } from 'sonner';
 
-interface UserNewPassowordProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface UserNewPassowordProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type FormData = z.infer<typeof userNewPassowordSchema>;
 
-export function UserNewPassword({ className, ...props }: UserNewPassowordProps) {
+export function UserNewPassword({
+  className,
+  ...props
+}: UserNewPassowordProps) {
   const {
     register,
     handleSubmit,
@@ -34,17 +36,35 @@ export function UserNewPassword({ className, ...props }: UserNewPassowordProps) 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [success, setSuccess] = React.useState<string | undefined>('');
   const [error, setError] = React.useState<string | undefined>('');
-  const searchParams = useSearchParams()
-  const token = searchParams.get("token")
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   async function onSubmit(data: FormData) {
     setIsLoading(true);
     newPassword(data, token)
       .then((res) => {
-        setSuccess(res?.success)
-        setError(res?.error)
-
+        setSuccess(res?.success);
+        setError(res?.error);
+        if (res.success) {
+          toast.success('Success', {
+            description: res.success,
+            position: 'bottom-center'
+          });
+        }
+        if (res.error) {
+          toast.error('Error', {
+            description: res.error,
+            position: 'bottom-center'
+          });
+        }
       })
+      .catch(() => {
+        toast.error('Error', {
+          description: 'Something went wrong',
+          position: 'bottom-center'
+        });
+        setError('Something went wrong');
+      });
     setIsLoading(false);
   }
 
@@ -98,7 +118,7 @@ export function UserNewPassword({ className, ...props }: UserNewPassowordProps) 
           </div>
           <Link
             href="/login"
-            className="hover:text-brand underline underline-offset-4 text-xs"
+            className="hover:text-brand text-xs underline underline-offset-4"
           >
             Login
           </Link>

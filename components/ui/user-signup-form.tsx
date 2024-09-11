@@ -10,7 +10,6 @@ import { userSignupSchema } from '@/lib/validations/auth';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from './label';
-import { toast } from '@/components/ui/use-toast';
 import { Icons } from '../icons';
 import {
   InputOTP,
@@ -23,9 +22,10 @@ import { FormField } from '@/components/ui/form';
 import { register as signup } from '@/actions/register';
 import { FormError } from '../forms/form-error';
 import { FormSuccess } from '../forms/form-success';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
-interface UserSignupFormProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface UserSignupFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type FormData = z.infer<typeof userSignupSchema>;
 
@@ -49,7 +49,19 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
     const res = signup(data);
     let success = (await res).success;
     let err = (await res).error;
-    setSuccess(success)
+    if (err) {
+      toast.error('Error', {
+        description: err,
+        position: 'bottom-center'
+      });
+    }
+    setSuccess(success);
+    if (success) {
+      toast.success('Success', {
+        description: success,
+        position: 'bottom-center'
+      });
+    }
     setError(err);
     setIsLoading(false);
   }
@@ -188,7 +200,7 @@ export function UserSignupForm({ className, ...props }: UserSignupFormProps) {
           </div>
           <Link
             href="/login"
-            className="hover:text-brand underline underline-offset-4 text-xs"
+            className="hover:text-brand text-xs underline underline-offset-4"
           >
             Already have an account? Login
           </Link>

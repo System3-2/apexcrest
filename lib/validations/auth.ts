@@ -54,3 +54,34 @@ export const transferSchema = z.object({
   description: z.string(),
   pin: z.string()
 });
+
+export const profileSchema = z
+  .object({
+    firstName: z.optional(z.string()),
+    lastName: z.optional(z.string()),
+    email: z.optional(z.string().email()),
+    pin: z.optional(z.string()),
+    password: z.string().min(1, { message: 'Password required' }),
+    newPassword: z
+      .string()
+      .optional()
+      .refine((value) => {
+        // If newPassword is provided, it must be at least 8 characters
+        return !value || value.length >= 8;
+      }, 'New password must be at least 8 characters long if provided')
+  })
+  .refine(
+    (data) => {
+      // if (data.password && !data.newPassword) {
+      //   return false;
+      // }
+      if (data.newPassword && !data.password) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: 'Password must match',
+      path: ['newPassword']
+    }
+  );
