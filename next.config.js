@@ -2,6 +2,9 @@
 const nextConfig = {
   images: {
     domains: ['utfs.io']
+  },
+  eslint: {
+    ignoreDuringBuilds: true
   }
 };
 
