@@ -1,47 +1,32 @@
 import { Footer } from '@/components/footer';
 import { RootNavbar } from '@/components/layout/navbar';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Proxima Heritage Crest - Modern Banking Solutions',
+  title: 'About Us - Proxima Heritage Crest',
   description:
-    'Proxima Heritage Crest offers innovative and reliable banking services to individuals and businesses. From savings and loans to business solutions, we help you achieve your financial goals with ease and security.',
+    'Learn more about Proxima Heritage Crest, our values, mission, and commitment to providing innovative and reliable banking solutions for individuals and businesses.',
   keywords:
-    'Proxima Heritage Crest, banking, online banking, savings, loans, business banking, financial services, secure banking, personal finance, business solutions',
+    'Proxima Heritage Crest, about us, banking values, financial mission, banking solutions, trusted bank, banking team',
   openGraph: {
-    title: 'Proxima Heritage Crest - Your Trusted Banking Partner',
+    title: 'About Proxima Heritage Crest - Trusted Banking Solutions',
     description:
-      'Explore Proxima Heritage Crest for reliable and secure banking services that empower you to achieve financial success. Discover personalized banking solutions for individuals and businesses.',
-    url: '',
-    type: 'website',
-    images: [
-      {
-        url: '',
-        width: 800,
-        height: 600,
-        alt: 'Proxima Heritage Crest Logo'
-      }
-    ]
-  },
-  twitter: {
-    card: 'summary_large_image',
-    site: '@ProximaCrest',
-    title: 'Proxima Heritage Crest - Modern Banking Solutions',
-    description:
-      'Proxima Heritage Crest provides secure, personalized banking solutions for individuals and businesses. Let us help you manage your finances efficiently.'
+      'Discover the story and mission behind Proxima Heritage Crest. Learn about our commitment to providing secure and personalized banking services for individuals and businesses.',
+    url: '/about',
+    type: 'website'
   }
 };
 
-export default async function AboutLayout({
+export default function AboutLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <main>
+    <>
       <RootNavbar />
       {children}
       <Footer />
-    </main>
+    </>
   );
 }

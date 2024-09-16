@@ -45,6 +45,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         position: 'bottom-center'
       });
     }
+    if (succ) {
+      toast.success('Success', {
+        description: res.success,
+        position: 'bottom-center'
+      });
+    }
     setError(err);
     setIsLoading(false);
   }

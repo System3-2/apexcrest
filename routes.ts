@@ -4,7 +4,8 @@ export const publicRoutes = [
   '/new-password',
   '/terms',
   '/about',
-  '/services'
+  '/services',
+  '/help'
 ];
 
 export const authRoutes = ['/login', '/signup', '/auth/error', '/reset'];

@@ -124,6 +124,12 @@ export const navItems: NavItem[] = [
     label: 'transfer'
   },
   {
+    title: 'Withdrawal',
+    href: '/account/withdrawal',
+    icon: 'wallet',
+    label: 'withdrawal'
+  },
+  {
     title: 'Transaction',
     href: '/account/transactions',
     icon: 'transactions',

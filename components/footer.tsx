@@ -27,10 +27,10 @@ export function Footer() {
           &copy; 2024 Proxima Heritage Crest
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <Link href="#" className="hover:underline" prefetch={false}>
+          <Link href="/terms" className="hover:underline" prefetch={false}>
             Privacy Policy
           </Link>
-          <Link href="#" className="hover:underline" prefetch={false}>
+          <Link href="/terms" className="hover:underline" prefetch={false}>
             Terms of Service
           </Link>
         </div>
