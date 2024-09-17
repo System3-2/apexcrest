@@ -13,7 +13,7 @@
     "lint": "next lint",
     "format": "prettier . --write",
     "prepare": "husky",
-    "postinstall": "npx prisma generate"
+    "postinstall": "npx prisma generate && npx prisma migrate deploy"
   },
   "lint-staged": {
     "**/*": [
