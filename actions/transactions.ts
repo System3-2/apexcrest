@@ -28,3 +28,5 @@ export const getTransactionsSummary = async (userId: number | undefined) => {
 
   return { totalTransactions, lastFiveTransactions };
 };
+
+export const getTransactionsHistory = async (email: string) => {};
