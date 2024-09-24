@@ -31,7 +31,24 @@ import {
   X,
   Coins,
   ArrowLeftRight,
-  Wallet
+  Wallet,
+  ArrowRightIcon,
+  Crown,
+  Vegan,
+  Ghost,
+  Puzzle,
+  Squirrel,
+  Cookie,
+  Drama,
+  Blocks,
+  LineChart,
+  Sparkle,
+  TabletSmartphone,
+  BadgeCheck,
+  Goal,
+  PictureInPicture,
+  MousePointerClick,
+  Newspaper
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -66,6 +83,23 @@ export const Icons = {
   coins: Coins,
   transactions: ArrowLeftRight,
   wallet: Wallet,
+  Crown,
+  Vegan,
+  Ghost,
+  Puzzle,
+  Squirrel,
+  Cookie,
+  Drama,
+  Blocks,
+  LineChart,
+  Wallet,
+  Sparkle,
+  TabletSmartphone,
+  BadgeCheck,
+  Goal,
+  PictureInPicture,
+  MousePointerClick,
+  Newspaper,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

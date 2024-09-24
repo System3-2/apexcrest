@@ -10,7 +10,8 @@ import Link from 'next/link';
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuList
+  NavigationMenuList,
+  NavigationMenuLink
 } from '@/components/ui/navigation-menu';
 import {
   Sheet,
@@ -18,9 +19,11 @@ import {
   SheetHeader,
   SheetTrigger,
   SheetFooter,
-  SheetClose
+  SheetTitle
 } from '@/components/ui/sheet';
-import { HamburgerMenuIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
+import { Separator } from '../ui/separator';
+import { Icons } from '../icons';
 
 type RouteProps = {
   href: string;
@@ -38,110 +41,88 @@ const routeList: RouteProps[] = [
   }
 ];
 export function RootNavbar() {
-  return (
-    <header className="sticky ">
-      {/* Mobile nav */}
-      <NavigationMenu className="mx-auto border-b border-foreground md:sr-only md:hidden">
-        <NavigationMenuList className="container flex h-14 w-screen justify-between px-4 ">
-          <NavigationMenuItem className="flex font-bold">
-            <Link href="/" className="flex items-center space-x-4">
-              <img
-                src="/proxima.svg"
-                alt="Logo"
-                className="h-10"
-                width="40"
-                height="40"
-                style={{ aspectRatio: '40/40', objectFit: 'cover' }}
-              />
-              <h1 className="text-md font-bold text-foreground">
-                Proxima Heritage Crest
-              </h1>
-            </Link>
-          </NavigationMenuItem>
+  const [isOpen, setIsOpen] = useState(false);
 
-          <span className="flex md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline">
-                  <HamburgerMenuIcon />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <Link href="/">
-                    <img
+  return (
+    <header className="sticky top-5 z-40 mx-auto flex w-[90%] items-center justify-between rounded-2xl border border-secondary bg-card bg-opacity-15 p-2 shadow-inner md:w-[70%] lg:w-[75%] lg:max-w-screen-xl">
+      <Link href="/" className="flex items-center text-lg font-bold">
+        <Image src="/proxima.svg" alt="apexbank-crest" width={50} height={50} />
+        ApexBank Crest
+      </Link>
+      {/* <!-- Mobile --> */}
+      <div className="flex items-center lg:hidden">
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <ChevronDownIcon
+              onClick={() => setIsOpen(!isOpen)}
+              className="cursor-pointer lg:hidden"
+            />
+          </SheetTrigger>
+
+          <SheetContent
+            side="left"
+            className="flex flex-col justify-between rounded-br-2xl rounded-tr-2xl border-secondary bg-card"
+          >
+            <div>
+              <SheetHeader className="mb-4 ml-4">
+                <SheetTitle className="flex items-center">
+                  <Link href="/" className="flex items-center">
+                    <Image
                       src="/proxima.svg"
-                      alt="Logo"
-                      className="h-10"
-                      width="100"
-                      height="100"
-                      style={{ aspectRatio: '40/40', objectFit: 'cover' }}
+                      alt="apexbank-crest"
+                      width={50}
+                      height={50}
                     />
+                    ApexBank Crest
                   </Link>
-                </SheetHeader>
-                <div className="grid gap-4 py-4">
-                  {routeList.map(({ href, label }) => (
-                    <Link
-                      href={href}
-                      className="grid items-center gap-4 border-b border-foreground p-2"
-                      key={href}
-                    >
-                      <h2 className="text-center font-bold text-foreground">
-                        {label}
-                      </h2>
-                    </Link>
-                  ))}
-                </div>
-                <SheetFooter className="pt-4">
-                  <SheetClose asChild>
-                    <Button type="submit">
-                      <Link href={'/account'}>Account</Link>
-                    </Button>
-                  </SheetClose>
-                </SheetFooter>
-              </SheetContent>
-            </Sheet>
-          </span>
+                </SheetTitle>
+              </SheetHeader>
+
+              <div className="flex flex-col gap-2">
+                {routeList.map(({ href, label }) => (
+                  <Button
+                    key={href}
+                    onClick={() => setIsOpen(false)}
+                    asChild
+                    variant="ghost"
+                    className="justify-start text-base"
+                  >
+                    <Link href={href}>{label}</Link>
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <SheetFooter className="flex-col items-start justify-start sm:flex-col">
+              <Separator className="mb-2" />
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* <!-- Desktop --> */}
+      <NavigationMenu className="mx-auto hidden lg:block">
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            {routeList.map(({ href, label }) => (
+              <NavigationMenuLink key={href} asChild>
+                <Link href={href} className="px-2 text-base">
+                  {label}
+                </Link>
+              </NavigationMenuLink>
+            ))}
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
 
-      <nav className="hidden items-center justify-between border-b p-4 md:flex">
-        <Link href="/" className="flex items-center space-x-4">
-          <img
-            src="/proxima.svg"
-            alt="Logo"
-            className="h-10"
-            width="40"
-            height="40"
-            style={{ aspectRatio: '40/40', objectFit: 'cover' }}
-          />
-          <h1 className="text-2xl font-bold text-foreground">
-            Proxima Heritage Crest
-          </h1>
+      <div className="hidden px-2 lg:flex">
+        <Link aria-label="View on GitHub" href="/help">
+          <Icons.help className="space-x-3" />
         </Link>
-        <nav className="flex items-center space-x-8 text-sm font-medium text-foreground">
-          {routeList.map(({ href, label }) => (
-            <React.Fragment key={href}>
-              <Link href={href} className="text-gray-500">
-                {label}
-              </Link>
-            </React.Fragment>
-          ))}
-        </nav>
-        <div className="flex items-center space-x-4">
-          <Link href={'/help'}>
-            <MessageCircleQuestionIcon className="h-6 w-6 text-gray-500" />
-          </Link>
-          <Link href={'/login'}>
-            <Button
-              variant="outline"
-              className="border-foreground text-foreground"
-            >
-              Account
-            </Button>
-          </Link>
-        </div>
-      </nav>
+        <Link aria-label="View on GitHub" href="/account/">
+          Account
+        </Link>
+      </div>
     </header>
   );
 }

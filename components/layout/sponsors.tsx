@@ -1,48 +1,81 @@
+'use client';
+
+import { Marquee } from '@devnomic/marquee';
+import '@devnomic/marquee/dist/index.css';
+import { icons } from 'lucide-react';
+import { Icons } from '../icons';
+interface sponsorsProps {
+  icon: string;
+  name: string;
+}
+
+const sponsors: sponsorsProps[] = [
+  {
+    icon: 'Crown',
+    name: 'Acmebrand'
+  },
+  {
+    icon: 'Vegan',
+    name: 'Acmelogo'
+  },
+  {
+    icon: 'Ghost',
+    name: 'Acmesponsor'
+  },
+  {
+    icon: 'Puzzle',
+    name: 'Acmeipsum'
+  },
+  {
+    icon: 'Squirrel',
+    name: 'Acme'
+  },
+  {
+    icon: 'Cookie',
+    name: 'Accmee'
+  },
+  {
+    icon: 'Drama',
+    name: 'Acmetech'
+  }
+];
+
 export function Sponsors() {
   return (
-    <div className="bg-white pt-24 sm:pt-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <h2 className="text-center text-lg font-semibold leading-8 text-gray-900">
-          Trusted by the world’s most innovative teams
-        </h2>
-        <div className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
-          <img
-            alt="Transistor"
-            src="https://tailwindui.com/img/logos/158x48/transistor-logo-gray-900.svg"
-            width={158}
-            height={48}
-            className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-          />
-          <img
-            alt="Reform"
-            src="https://tailwindui.com/img/logos/158x48/reform-logo-gray-900.svg"
-            width={158}
-            height={48}
-            className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-          />
-          <img
-            alt="Tuple"
-            src="https://tailwindui.com/img/logos/158x48/tuple-logo-gray-900.svg"
-            width={158}
-            height={48}
-            className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-          />
-          <img
-            alt="SavvyCal"
-            src="https://tailwindui.com/img/logos/158x48/savvycal-logo-gray-900.svg"
-            width={158}
-            height={48}
-            className="col-span-2 max-h-12 w-full object-contain sm:col-start-2 lg:col-span-1"
-          />
-          <img
-            alt="Statamic"
-            src="https://tailwindui.com/img/logos/158x48/statamic-logo-gray-900.svg"
-            width={158}
-            height={48}
-            className="col-span-2 col-start-2 max-h-12 w-full object-contain sm:col-start-auto lg:col-span-1"
-          />
-        </div>
+    <section id="sponsors" className="mx-auto max-w-[75%] pb-24 sm:pb-32">
+      <h2 className="mb-6 text-center text-lg md:text-xl">
+        Our Platinum Sponsors
+      </h2>
+
+      <div className="mx-auto">
+        <Marquee
+          className="gap-[3rem]"
+          fade
+          innerClassName="gap-[3rem]"
+          pauseOnHover
+        >
+          {sponsors.map(({ name, icon }) => {
+            //@ts-ignore
+            const Icon = Icons[icon || 'arrowRight'];
+            return (
+              <>
+                <div
+                  key={name}
+                  className="flex items-center text-xl font-medium md:text-2xl"
+                >
+                  <Icon
+                    name={icon as keyof typeof icons}
+                    size={32}
+                    color="white"
+                    className="mr-2"
+                  />
+                  {name}
+                </div>
+              </>
+            );
+          })}
+        </Marquee>
       </div>
-    </div>
-  )
+    </section>
+  );
 }

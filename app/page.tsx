@@ -6,16 +6,18 @@ import { Promotion } from '@/components/layout/promotion';
 import { Sponsors } from '@/components/layout/sponsors';
 import { Testimonials } from '@/components/layout/testimonials';
 import { Footer } from '@/components/footer';
+import { BenefitsSection } from '@/components/layout/benefits';
 
 export default function Home() {
   return (
     <>
       <RootNavbar />
-      <Promotion />
       <Hero />
-      <Features />
-      <Testimonials />
       <Sponsors />
+      <BenefitsSection />
+      <Features />
+      <Promotion />
+      <Testimonials />
       <Contact />
       <Footer />
     </>

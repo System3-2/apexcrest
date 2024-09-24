@@ -1,76 +1,62 @@
-import Link from "next/link"
-
+import Link from 'next/link';
+import { Button } from '../ui/button';
+import Image from 'next/image';
+import { Icons } from '../icons';
+import { Badge } from '../ui/badge';
 
 const links = [
   { name: 'Explore Our Services', href: '/services' },
   { name: 'Why Choose Us?', href: '/about' },
-  { name: 'Our Commitment', href: '/about' },
-]
+  { name: 'Our Commitment', href: '/about' }
+];
 const stats = [
   { name: 'Clients Served', value: '300+' },
   { name: 'Support Hours Weekly', value: '40' },
-  { name: 'Flexibility', value: 'Unlimited ' },
-]
+  { name: 'Flexibility', value: 'Unlimited ' }
+];
 
 export function Hero() {
   return (
-    <div className="relative isolate overflow-hidden py-24 sm:py-32">
-      <img
-        alt=""
-        src="/header.avif"
-        className="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center"
-      />
-      <div
-        aria-hidden="true"
-        className="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl"
-      >
-        <div
-          style={{
-            clipPath:
-              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-          }}
-          className="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
-        />
-      </div>
-      <div
-        aria-hidden="true"
-        className="absolute -top-52 left-1/2 -z-10 -translate-x-1/2 transform-gpu blur-3xl sm:top-[-28rem] sm:ml-16 sm:translate-x-0 sm:transform-gpu"
-      >
-        <div
-          style={{
-            clipPath:
-              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-          }}
-          className="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
-        />
-      </div>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">Banking Tailored for You
+    <section className="container w-full">
+      <div className="mx-auto grid place-items-center gap-8 py-20 md:py-32 lg:max-w-screen-xl">
+        <div className="space-y-8 text-center">
+          <Badge variant="outline" className="py-2 text-sm">
+            <span className="mr-2 text-primary">
+              <Badge>New</Badge>
+            </span>
+            <span> Apexbank Crest's Latest Features! </span>
+          </Badge>
 
-          </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-300">
-            Experience banking that works around your needs. Whether you’re managing personal finances or running a business, our platform offers the tools and support to help you succeed.
-          </p>
-        </div>
-        <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
-          <div className="grid grid-cols-1 gap-x-8 gap-y-6 text-base font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
-            {links.map((link) => (
-              <Link key={link.name} href={link.href}>
-                {link.name} <span aria-hidden="true">&rarr;</span>
-              </Link>
-            ))}
+          <div className="mx-auto max-w-screen-md text-center text-4xl font-bold md:text-6xl">
+            <h1>
+              Discover the Future of
+              <span className="bg-gradient-to-r from-[#D247BF] to-primary bg-clip-text px-2 text-transparent">
+                Apexbank Crest
+              </span>
+              Banking
+            </h1>
           </div>
-          <dl className="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.name} className="flex flex-col-reverse">
-                <dt className="text-base leading-7 text-gray-300">{stat.name}</dt>
-                <dd className="text-2xl font-bold leading-9 tracking-tight text-white">{stat.value}</dd>
-              </div>
-            ))}
-          </dl>
+
+          <p className="mx-auto max-w-screen-sm text-xl text-muted-foreground">
+            {`Join the leading digital bank that puts you in control of your financial journey. Enjoy personalized services, advanced security, and a seamless experience.`}
+          </p>
+
+          <div className="space-y-4 md:space-x-4 md:space-y-0">
+            <Button className="group/arrow w-5/6 font-bold md:w-1/4">
+              <Link href={'/signup'}>Open an Account</Link>
+              <Icons.arrowRight className="ml-2 size-5 transition-transform group-hover/arrow:translate-x-1" />
+            </Button>
+
+            <Button
+              asChild
+              variant="secondary"
+              className="w-5/6 font-bold md:w-1/4"
+            >
+              <Link href="/about">Learn more</Link>
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }

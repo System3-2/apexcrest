@@ -1,58 +1,95 @@
-import { HamburgerMenuIcon } from "@radix-ui/react-icons"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Icons } from '../icons';
 
-const features = [
-  {
-    name: 'Small business checking',
-    description:
-      'Our Small Business Checking account is tailored to help you manage your business finances with ease. ',
-    icon: HamburgerMenuIcon,
-  },
-  {
-    name: 'Find business credit card',
-    description:
-      "Whether you're looking for rewards, low interest rates, or cash back, we have options that will help you manage expenses and build credit.",
-    icon: HamburgerMenuIcon,
-  },
-  {
-    name: 'Merchant services',
-    description: "We provide secure and reliable payment processing solutions, whether you're online, in-store, or on the go.",
-    icon: HamburgerMenuIcon,
-  },
-  {
-    name: 'Apply for loan',
-    description: "Whether you're expanding your business or need working capital, we're here to support your growth.",
-    icon: HamburgerMenuIcon,
-  },
-]
-
-export function Features() {
-  return (
-    <div className="py-8">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:text-center">
-          <p className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-            Everything You Need to Manage Your Finances
-          </p>
-          <p className="mt-6 text-lg leading-8 ">
-            Whether you're a small business owner or an individual, we offer a comprehensive suite of financial tools and services designed to meet your needs. From checking accounts to credit cards, we have you covered.
-          </p>
-        </div>
-        <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl p-6 ">
-          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16 p-6">
-            {features.map((feature) => (
-              <div key={feature.name} className="relative pl-16 bg-secondary p-3 rounded-lg">
-                <dt className="text-base font-semibold leading-7 ">
-                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg ">
-                    <feature.icon aria-hidden="true" className="h-6 w-6 " />
-                  </div>
-                  {feature.name}
-                </dt>
-                <dd className="mt-2 text-base leading-7 text-gray-600">{feature.description}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </div>
-  )
+interface FeaturesProps {
+  icon: string;
+  title: string;
+  description: string;
 }
+
+const featureList: FeaturesProps[] = [
+  {
+    icon: 'TabletSmartphone',
+    title: 'Mobile Banking',
+    description:
+      'Access your accounts anytime, anywhere with our intuitive mobile app. Manage transactions, check balances, and more on the go.'
+  },
+  {
+    icon: 'BadgeCheck',
+    title: 'Trusted by Thousands',
+    description:
+      'Join a growing community of satisfied customers who trust Apexbank Crest with their financial needs.'
+  },
+  {
+    icon: 'Goal',
+    title: 'Personalized Financial Goals',
+    description:
+      'Set and achieve your financial goals with tailored plans and expert guidance designed to help you succeed.'
+  },
+  {
+    icon: 'PictureInPicture',
+    title: 'User-Centric Design',
+    description:
+      'Navigate effortlessly through our platform, designed with a focus on user experience and accessibility.'
+  },
+  {
+    icon: 'MousePointerClick',
+    title: 'Quick & Easy Account Setup',
+    description:
+      "Open an account within minutes and get started with Apexbank Crest's services with minimal hassle."
+  },
+  {
+    icon: 'Newspaper',
+    title: 'Transparent Policies',
+    description:
+      'We provide clear, straightforward information about our services, ensuring you always know what to expect.'
+  }
+];
+
+export const Features = () => {
+  return (
+    <section id="features" className="container py-24 sm:py-32">
+      <h2 className="mb-2 text-center text-lg tracking-wider text-primary">
+        Features
+      </h2>
+
+      <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
+        What Makes Us Different
+      </h2>
+
+      <h3 className="mx-auto mb-8 text-center text-xl text-muted-foreground md:w-1/2">
+        Apexbank Crest is redefining digital banking with cutting-edge features
+        that put you in control of your financial future.
+      </h3>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {featureList.map(({ icon, title, description }) => {
+          //@ts-ignore
+          const Icon = Icons[icon || 'arrowLeft'];
+          return (
+            <div key={title}>
+              <Card className="h-full border-0 bg-background shadow-none">
+                <CardHeader className="flex items-center justify-center">
+                  <div className="mb-4 rounded-full bg-primary/20 p-2 ring-8 ring-primary/10">
+                    <Icon
+                      name={icon}
+                      size={24}
+                      color="hsl(var(--primary))"
+                      className="text-primary"
+                    />
+                  </div>
+
+                  <CardTitle>{title}</CardTitle>
+                </CardHeader>
+
+                <CardContent className="text-center text-muted-foreground">
+                  {description}
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
