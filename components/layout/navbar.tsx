@@ -38,6 +38,10 @@ const routeList: RouteProps[] = [
   {
     href: '/services',
     label: 'SERVICES'
+  },
+  {
+    href: '/login',
+    label: 'ACCOUNT'
   }
 ];
 export function RootNavbar() {
