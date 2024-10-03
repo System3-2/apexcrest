@@ -66,7 +66,7 @@
     "input-otp": "^1.2.4",
     "jspdf": "^2.5.1",
     "lucide-react": "^0.291.0",
-    "next": "^14.2.3",
+    "next": "^14.2.14",
     "next-auth": "^5.0.0-beta.18",
     "next-themes": "^0.2.1",
     "nextjs-toploader": "^1.6.12",
